@@ -120,3 +120,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* 滚动条宽度 */
+  height: 8px; /* 水平滚动条高度（如果需要） */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2d3748; /* 接近 bg-gray-800 的轨道颜色 */
+  border-radius: 4px; /* 圆角 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #4a5568; /* 滑块默认颜色，接近 bg-gray-600 */
+  border-radius: 4px; /* 圆角 */
+  transition: background 0.2s; /* 悬停过渡效果 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #718096; /* 悬停时变浅，接近 bg-gray-500 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: #4a5568; /* 点击时恢复默认颜色 */
+}
+
+/* Firefox 兼容性 */
+.custom-scrollbar {
+  scrollbar-width: thin; /* 细滚动条 */
+  scrollbar-color: #4a5568 #2d3748; /* 滑块颜色 轨道颜色 */
+}

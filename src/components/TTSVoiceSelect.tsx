@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     Select,
     SelectContent,
@@ -7,6 +7,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setSelectedVoice, setSpeed } from "@/store/TTSSlice";
 
 interface Voice {
     name: string;
@@ -14,38 +16,39 @@ interface Voice {
 }
 
 const TTSVoiceSelect: React.FC = () => {
-    const [voices, setVoices] = useState<Voice[]>([]);
-    const [selectedVoice, setSelectedVoice] = useState<string>('');
+    const dispatch = useAppDispatch();
+    const { selectedVoice, speed } = useAppSelector(state => state.tts);
 
-    // 获取浏览器支持的语音列表
+    const [voices, setVoices] = React.useState<Voice[]>([]);
+
+    // 获取浏览器支持的语音列表并设置默认语音
     useEffect(() => {
         const loadVoices = () => {
             const synth = window.speechSynthesis;
             const availableVoices = synth.getVoices();
-            setVoices(availableVoices.map(voice => ({
+            const voiceList = availableVoices.map(voice => ({
                 name: voice.name,
                 lang: voice.lang
-            })));
+            }));
+            setVoices(voiceList);
 
-            // 如果有语音可用，设置默认选择第一个
-            if (availableVoices.length > 0) {
-                setSelectedVoice(availableVoices[0].name);
+            // 如果有语音可用且 selectedVoice 为空或无效，设置默认选择第一个
+            if (voiceList.length > 0 && (!selectedVoice || !voiceList.some(voice => voice.name === selectedVoice))) {
+                dispatch(setSelectedVoice(voiceList[0].name));
             }
         };
 
-        // 语音列表可能需要时间加载，添加事件监听
         window.speechSynthesis.onvoiceschanged = loadVoices;
         loadVoices();
 
-        // 清理事件监听
         return () => {
             window.speechSynthesis.onvoiceschanged = null;
         };
-    }, []);
+    }, [dispatch, selectedVoice]);
 
     // 处理语音选择
     const handleVoiceChange = (value: string) => {
-        setSelectedVoice(value);
+        dispatch(setSelectedVoice(value));
     };
 
     // 测试选中的语音
@@ -60,6 +63,7 @@ const TTSVoiceSelect: React.FC = () => {
             utterance.voice = window.speechSynthesis.getVoices().find(
                 voice => voice.name === selectedVoice
             ) || null;
+            utterance.rate = speed; // 应用当前速度
             synth.speak(utterance);
         }
     };
@@ -67,9 +71,9 @@ const TTSVoiceSelect: React.FC = () => {
     return (
         <div className="flex items-center space-x-4">
             <div className="flex-1 text-gray-100">
-                <Select value={selectedVoice} onValueChange={handleVoiceChange}>
+                <Select value={selectedVoice || ''} onValueChange={handleVoiceChange}>
                     <SelectTrigger className="w-full">
-                        <SelectValue placeholder="选择TTS语音角色"/>
+                        <SelectValue placeholder="选择TTS语音角色" />
                     </SelectTrigger>
                     <SelectContent>
                         {voices.length === 0 ? (
