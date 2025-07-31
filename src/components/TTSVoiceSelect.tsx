@@ -4,7 +4,7 @@ import {Button} from '@/components/ui/button';
 import {useTTS, Voice} from "@/hooks/useTTS";
 
 const TTSVoiceSelect: React.FC = () => {
-    const { playText, setVoice, setPlaybackSpeed, voices, selectedVoice, isReady } = useTTS('en');
+    const { playText, setVoice, setPlaybackSpeed, voices, selectedVoice, isReady } = useTTS();
     // 处理语音选择
     const handleVoiceChange = (value: string) => {
         setVoice(value);
