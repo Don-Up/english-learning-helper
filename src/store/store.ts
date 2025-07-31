@@ -4,19 +4,16 @@ import langReducer from "./LangSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
 
-const persistConfig = {
-    key: "root",
-    storage,
-    whitelist: ["tts", "lang"], // 持久化 tts 和 lang 状态
-};
+const ttsPersistConfig = { key: "tts", storage };
+// const langPersistConfig = { key: "lang", storage, };
 
-const persistedTtsReducer = persistReducer(persistConfig, ttsReducer);
-const persistedLangReducer = persistReducer(persistConfig, langReducer);
+const persistedTtsReducer = persistReducer(ttsPersistConfig, ttsReducer);
+// const persistedLangReducer = persistReducer(langPersistConfig, langReducer);
 
 export const store = configureStore({
     reducer: {
         tts: persistedTtsReducer,
-        lang: persistedLangReducer,
+        lang: langReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

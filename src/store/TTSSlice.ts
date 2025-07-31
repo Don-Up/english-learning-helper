@@ -6,7 +6,7 @@ interface TTSState {
 }
 
 const initialState: TTSState = {
-    selectedVoice: "Microsoft Huihui - Chinese (Simplified, PRC) (zh-CN)", // 默认 TTS 角色
+    selectedVoice: "Microsoft Mark - English (United States) (en-US)", // 默认 TTS 角色
     speed: 1.0, // 默认播放速度
 };
 
