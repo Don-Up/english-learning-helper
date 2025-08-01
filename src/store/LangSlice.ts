@@ -10,7 +10,10 @@ interface LangState {
 }
 
 const initialState: LangState = {
-    list: [],
+    list: [{
+        lang1Text: "Wish you a pleasant study!",
+        lang2Text: "祝你学习愉快！",
+    }],
 };
 
 const langSlice = createSlice({

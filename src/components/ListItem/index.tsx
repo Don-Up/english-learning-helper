@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {useTTS} from "@/hooks/useTTS";
 import {useAudioRecorder} from "@/hooks/useAudioRecorder";
+import {set} from "lodash";
 
 type ListItemProps = {
     index: string
@@ -74,6 +75,10 @@ const ListItem: React.FC<ListItemProps> = ({index, lang1, lang2}) => {
         playText(lang1.split(" ")[showWordCount-1])
     }
 
+    function handleReset() {
+        setShowWordCount(0)
+    }
+
     return (
         <div className="p-4 mt-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg shadow-gray-800/50 text-white">
             <div className={"flex"}>
@@ -84,9 +89,9 @@ const ListItem: React.FC<ListItemProps> = ({index, lang1, lang2}) => {
                     onClick={toggleLang1Visibility}
                     aria-expanded={isLang1Visible}
                 >
-                    {isLang1Visible ? "Hide" : "Show"}
+                    {isLang1Visible ? "Hide EN" : "Show EN"}
                 </Button>
-                <Button className={"ml-2"} size={"sm"}>Reset</Button>
+                <Button className={"ml-2"} size={"sm"} onClick={handleReset} disabled={showWordCount === 0}>Reset Hint</Button>
             </div>
             <div className={"mt-8 text-gray-100 text-lg"} style={{display: isLang1Visible ? "block" : "none"}}>
                 {lang1}
