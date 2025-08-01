@@ -15,12 +15,12 @@ export const store = configureStore({
         tts: ttsReducer,
         lang: langReducer,
     },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-            },
-        }),
+    // middleware: (getDefaultMiddleware) =>
+    //     getDefaultMiddleware({
+    //         serializableCheck: {
+    //             ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+    //         },
+    //     }),
 });
 
 export const persistor = persistStore(store);
