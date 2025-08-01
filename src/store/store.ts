@@ -7,12 +7,12 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage
 const ttsPersistConfig = { key: "tts", storage };
 // const langPersistConfig = { key: "lang", storage, };
 
-const persistedTtsReducer = persistReducer(ttsPersistConfig, ttsReducer);
+// const persistedTtsReducer = persistReducer(ttsPersistConfig, ttsReducer);
 // const persistedLangReducer = persistReducer(langPersistConfig, langReducer);
 
 export const store = configureStore({
     reducer: {
-        tts: persistedTtsReducer,
+        tts: ttsReducer,
         lang: langReducer,
     },
     middleware: (getDefaultMiddleware) =>
