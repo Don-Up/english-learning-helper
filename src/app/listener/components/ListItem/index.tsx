@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Button} from "@/components/ui/button";
 import {useTTS} from "@/hooks/useTTS";
 import {useAudioRecorder} from "@/hooks/useAudioRecorder";
@@ -55,14 +55,28 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
         playText(result)
     }
 
+    function handlePlaySelection() {
+        playText(window.getSelection()?.toString() || "")
+    }
+
+    function handlePlayRepeatedSelection() {
+        playText(`${window.getSelection()?.toString()}. `.repeat(playCount))
+    }
+
     return (
         <div className="p-4 mt-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg shadow-gray-800/50 text-white">
             <div className={"flex"}>
                 <div className={"text-2xl font-bold text-yellow-200"}>{index}</div>
-                <Button className={"ml-auto w-22"} size={"sm"} onClick={handleRecord} disabled={isPlaying}>
+                <Button className={"ml-auto w-20"} size={"sm"} onClick={handlePlaySelection} disabled={isPlaying}>
+                    PlayS
+                </Button>
+                <Button className={"ml-2 w-20"} size={"sm"} onClick={handlePlayRepeatedSelection} disabled={isPlaying}>
+                    PlayRS
+                </Button>
+                <Button className={"ml-2 w-20"} size={"sm"} onClick={handleRecord} disabled={isPlaying}>
                     {isRecording ? "Finish" : "Record"}
                 </Button>
-                <Button className={"ml-2 w-22"} size={"sm"} onClick={handlePlayback}>
+                <Button className={"ml-2 w-20"} size={"sm"} onClick={handlePlayback}>
                     {isPlaying ? "Stop" : "Playback"}
                 </Button>
             </div>
