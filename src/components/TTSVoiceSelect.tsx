@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
 import {useTTS, Voice} from "@/hooks/useTTS";
 
 const TTSVoiceSelect: React.FC = () => {
     const { playText, setVoice, setPlaybackSpeed, voices, selectedVoice, isReady } = useTTS();
+
     // 处理语音选择
     const handleVoiceChange = (value: string) => {
         setVoice(value);
@@ -28,9 +29,9 @@ const TTSVoiceSelect: React.FC = () => {
                                 加载语音中...
                             </SelectItem>
                         ) : (
-                            voices.map((voice: Voice) => (
-                                <SelectItem key={voice.name} value={voice.name}>
-                                    {voice.name} ({voice.lang})
+                            voices.map((voice: string) => (
+                                <SelectItem key={voice} value={voice}>
+                                    {voice}
                                 </SelectItem>
                             ))
                         )}

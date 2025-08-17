@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setSelectedVoice, setSpeed } from "@/store/TTSSlice";
+import {setPlayState, setSelectedVoice, setSpeed, setVoiceList} from "@/store/TTSSlice";
 import _ from 'lodash';
 
 export interface Voice {
@@ -8,11 +8,29 @@ export interface Voice {
     lang: string;
 }
 
+
 export const useTTS = () => {
     const dispatch = useAppDispatch();
-    const { selectedVoice, speed } = useAppSelector(state => state.tts);
-    const [voices, setVoices] = useState<Voice[]>([]);
+    const { selectedVoice, speed, playState, voices } = useAppSelector(state => state.tts);
     const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            switch (event.code) {
+                case 'KeyS':
+                    stopPlay();
+                    break;
+                case 'KeyD':
+                    pausePlay()
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [playState]);
 
     // 获取浏览器支持的语音列表并设置默认语音
     useEffect(() => {
@@ -20,29 +38,31 @@ export const useTTS = () => {
             const synth = window.speechSynthesis;
             const availableVoices = synth.getVoices()
                 .filter(voice => voice.lang.startsWith("en"));
+            // availableVoices.forEach(voice => {
+            //     console.log(voice.name)
+            // });
             const voiceList = availableVoices.map(voice => ({
                 name: voice.name,
                 lang: voice.lang
             }));
-            setVoices(voiceList);
-
+            dispatch(setVoiceList(voiceList.map(voice => voice.name)));
             if (voiceList.length > 0 && (!selectedVoice || !voiceList.some(voice => voice.name === selectedVoice))) {
                 dispatch(setSelectedVoice(voiceList[0].name));
             }
             setIsReady(true);
         };
+        loadVoices();
 
         window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
 
         return () => {
             window.speechSynthesis.onvoiceschanged = null;
         };
-    }, [dispatch, selectedVoice]);
+    }, []);
 
     const playText = _.throttle((text: string, onPlayEnd?: () => void) => {
         if (!isReady || !selectedVoice || !text) return;
-
+        dispatch(setPlayState("playing"))
         const synth = window.speechSynthesis;
         synth.cancel(); // 取消之前的播放
         const utterance = new SpeechSynthesisUtterance(text);
@@ -53,6 +73,7 @@ export const useTTS = () => {
             utterance.rate = speed;
             synth.speak(utterance);
             utterance.onend = () => {
+                dispatch(setPlayState("stopped"))
                 onPlayEnd?.();
             };
         }
@@ -60,7 +81,7 @@ export const useTTS = () => {
 
     const loopText = (text: string, onLoopEnd?: () => void) => {
         if (!isReady || !selectedVoice || !text) return;
-
+        dispatch(setPlayState("looping"))
         let isLooping = true;
         const synth = window.speechSynthesis;
 
@@ -87,16 +108,28 @@ export const useTTS = () => {
         return () => {
             isLooping = false;
             synth.cancel();
+            dispatch(setPlayState("stopped"))
             onLoopEnd?.();
         };
     };
 
     const stopPlay = () => {
+        dispatch(setPlayState("stopped"))
         window.speechSynthesis.cancel();
     };
 
+    const pausePlay = () => {
+        if(playState === "playing"){
+            dispatch(setPlayState("paused"))
+            window.speechSynthesis.pause();
+        } else {
+            dispatch(setPlayState("playing"))
+            window.speechSynthesis.resume();
+        }
+    }
+
     const setVoice = (voiceName: string) => {
-        if (voices.some(voice => voice.name === voiceName)) {
+        if (voices.some(voice => voice === voiceName)) {
             dispatch(setSelectedVoice(voiceName));
         }
     };
@@ -105,5 +138,5 @@ export const useTTS = () => {
         dispatch(setSpeed(newSpeed));
     };
 
-    return { playText, loopText, stopPlay, setVoice, setPlaybackSpeed, voices, selectedVoice, speed, isReady };
+    return { playText, loopText, stopPlay, setVoice, setPlaybackSpeed, playState, voices, selectedVoice, speed, isReady };
 };

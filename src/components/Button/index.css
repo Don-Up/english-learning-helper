@@ -1,0 +1,39 @@
+.button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+
+/* 主要按钮样式 */
+.button.primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+/* 次要按钮样式 */
+.button.secondary {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+/* 禁用状态 */
+.button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 加载状态的旋转动画 */
+.button.loading .spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

@@ -3,6 +3,7 @@ import {Button} from "@/components/ui/button";
 import {useTTS} from "@/hooks/useTTS";
 import {useAudioRecorder} from "@/hooks/useAudioRecorder";
 import {set} from "lodash";
+import {useAppSelector} from "@/store/hooks";
 
 type ListItemProps = {
     index: string
@@ -10,7 +11,6 @@ type ListItemProps = {
     lang2: string;
 }
 
-type PlayState = "playing" | "looping" | "paused" | "stopped";
 
 const ListItem: React.FC<ListItemProps> = ({index, lang1, lang2}) => {
 
@@ -18,8 +18,8 @@ const ListItem: React.FC<ListItemProps> = ({index, lang1, lang2}) => {
     const [showWordCount, setShowWordCount] = useState(0)
     const [hint, setHint] = useState("")
     const {playText, loopText, stopPlay} = useTTS()
+    const playState = useAppSelector(state => state.tts.playState)
     const { isRecording, startRecording, stopRecording, playRecording, isPlaying } = useAudioRecorder()
-    const [playState, setPlayState] = useState<PlayState>("stopped")
 
     useEffect(() => {
         const list = lang1.split(" ")
@@ -41,22 +41,16 @@ const ListItem: React.FC<ListItemProps> = ({index, lang1, lang2}) => {
     }
 
     function handlePlay() {
-        setPlayState("playing")
-        playText(lang1, () => {
-            setPlayState("stopped")
-        })
+        playText(lang1)
     }
 
     function handleLoop() {
-        setPlayState("looping")
-        loopText(lang1, () => {
-            setPlayState("stopped")
-        })
+
+        loopText(lang1)
     }
 
     function handleStop() {
         stopPlay()
-        setPlayState("stopped")
     }
 
     function handleRecord() {

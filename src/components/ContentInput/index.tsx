@@ -42,6 +42,7 @@ const ContentInput: React.FC = () => {
             />
             <div className={"flex gap-2 mt-4"}>
                 <Button onClick={handleGenerate} disabled={value === ""}>Generate</Button>
+                <Button>Listening Test</Button>
                 {/*<Button disabled={value === ""}>Reset</Button>*/}
                 {/*<Button>Immersive Mode</Button>*/}
             </div>
