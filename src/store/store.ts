@@ -1,30 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ttsReducer from "./TTSSlice";
 import langReducer from "./LangSlice";
-// import { persistReducer, persistStore } from "redux-persist";
-// import storage from "redux-persist/lib/storage";
-import listenChipSlice from "@/store/ListenChipSlice"; // defaults to localStorage
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import listenerReducer from "@/store/ListenChipSlice"; // defaults to localStorage
 
-// const ttsPersistConfig = { key: "tts", storage };
-// const langPersistConfig = { key: "lang", storage, };
+const ttsPersistConfig = { key: "tts", storage };
+const langPersistConfig = { key: "lang", storage, };
+const listenerPersistConfig = { key: "listener", storage, };
 
-// const persistedTtsReducer = persistReducer(ttsPersistConfig, ttsReducer);
-// const persistedLangReducer = persistReducer(langPersistConfig, langReducer);
+
+const persistedTtsReducer = persistReducer(ttsPersistConfig, ttsReducer);
+const persistedLangReducer = persistReducer(langPersistConfig, langReducer);
+const persistedListenerReducer = persistReducer(listenerPersistConfig, listenerReducer);
 
 export const store = configureStore({
     reducer: {
-        tts: ttsReducer,
-        lang: langReducer,
-        listener: listenChipSlice
+        tts: persistedTtsReducer,
+        lang: persistedLangReducer,
+        listener: persistedListenerReducer
     },
-    // middleware: (getDefaultMiddleware) =>
-    //     getDefaultMiddleware({
-    //         serializableCheck: {
-    //             ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-    //         },
-    //     }),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+            },
+        }),
 });
 
-export const persistor = store;
+export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -11,7 +11,6 @@ const config: StorybookConfig = {
     "@storybook/addon-onboarding",
     "@storybook/addon-a11y",
     "@storybook/addon-vitest",
-    "@storybook/addon-interactions",
   ],
   framework: {
     name: "@storybook/nextjs", // 切换为 Webpack 版本的框架

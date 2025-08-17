@@ -13,14 +13,14 @@ type ListItemProps = {
 const ListItem: React.FC<ListItemProps> = ({index, text}) => {
     const {playText, loopText, stopPlay, playState} = useTTS()
     const {isRecording, startRecording, stopRecording, playRecording, isPlaying} = useAudioRecorder()
-    const {playCount} = useAppSelector(state => state.listener)
+    const {playCount, chips} = useAppSelector(state => state.listener)
 
     function handlePlay() {
         playText(text)
     }
 
     function handleRepeatPlay() {
-        playText(`${text}. `.repeat(playCount))
+        playText(`${text}`.repeat(playCount))
     }
 
     function handleLoop() {
@@ -43,13 +43,30 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
         playRecording()
     }
 
+    function handleContinuedPlay() {
+        const result = chips.slice(Number(index[0]) - 1, chips.length).join("")
+        playText(result)
+    }
+
+    function handleRepeatedContinuedPlay() {
+        const result = chips.slice(Number(index[0]) - 1, chips.length).map(item =>
+            `${item}`.repeat(playCount)
+        ).join("")
+        playText(result)
+    }
+
     return (
         <div className="p-4 mt-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg shadow-gray-800/50 text-white">
             <div className={"flex"}>
                 <div className={"text-2xl font-bold text-yellow-200"}>{index}</div>
-
+                <Button className={"ml-auto w-22"} size={"sm"} onClick={handleRecord} disabled={isPlaying}>
+                    {isRecording ? "Finish" : "Record"}
+                </Button>
+                <Button className={"ml-2 w-22"} size={"sm"} onClick={handlePlayback}>
+                    {isPlaying ? "Stop" : "Playback"}
+                </Button>
             </div>
-            <div className={"mt-8 text-gray-100 text-lg"}>
+            <div className={"mt-4 text-gray-100 text-lg"}>
                 {text}
             </div>
 
@@ -57,18 +74,17 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
                 <Button className={"flex-1"} size={"sm"}
                         onClick={handlePlay}>{playState === "playing" ? "Playing..." : "Play"}</Button>
                 <Button className={"flex-1"} size={"sm"}
-                        onClick={handleRepeatPlay}>{playState === "playing" ? "Playing..." : "PlayR"}</Button>
+                        onClick={handleRepeatPlay}>PlayR</Button>
+                <Button className={"flex-1"} size={"sm"}
+                        onClick={handleContinuedPlay}>PlayC</Button>
+                <Button className={"flex-1"} size={"sm"}
+                        onClick={handleRepeatedContinuedPlay}>PlayRC</Button>
                 <Button className={"flex-1"} size={"sm"} onClick={handleLoop}>
                     {playState === "looping" ? "Looping..." : "Loop"}
                 </Button>
                 <Button className={"flex-1"} size={"sm"} onClick={handleStop}
                         disabled={playState === "stopped"}>Stop</Button>
-                <Button className={"flex-1"} size={"sm"} onClick={handleRecord} disabled={isPlaying}>
-                    {isRecording ? "Finish" : "Record"}
-                </Button>
-                <Button className={"flex-1"} size={"sm"} onClick={handlePlayback}>
-                    {isPlaying ? "Stop" : "Playback"}
-                </Button>
+
             </div>
         </div>)
 }

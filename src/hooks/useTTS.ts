@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {setPlayState, setSelectedVoice, setSpeed, setVoiceList} from "@/store/TTSSlice";
 import _ from 'lodash';
@@ -11,7 +11,7 @@ export interface Voice {
 
 export const useTTS = () => {
     const dispatch = useAppDispatch();
-    const { selectedVoice, speed, playState, voices } = useAppSelector(state => state.tts);
+    const { selectedVoice, speed, playState, voices, random } = useAppSelector(state => state.tts);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
@@ -66,8 +66,9 @@ export const useTTS = () => {
         const synth = window.speechSynthesis;
         synth.cancel(); // 取消之前的播放
         const utterance = new SpeechSynthesisUtterance(text);
-        const voice = window.speechSynthesis.getVoices().find(v => v.name === selectedVoice);
 
+        const voices = window.speechSynthesis.getVoices()
+        const voice = random ? getRandomVoice() : voices.find(v => v.name === selectedVoice)
         if (voice) {
             utterance.voice = voice;
             utterance.rate = speed;
@@ -79,19 +80,34 @@ export const useTTS = () => {
         }
     }, 1000);
 
+    const voicesOld = [
+        'Microsoft Mark - English (United States)',
+        'Microsoft Zira - English (United States)',
+        'Microsoft David - English (United States)',
+        'Microsoft Ana Online (Natural) - English (United States)'
+    ]
+
+    const getRandomVoice = () =>  {
+        const voices = window.speechSynthesis.getVoices().filter(voice => voice.lang.startsWith("en") && !voicesOld.includes(voice.name))
+        return voices[Math.floor(Math.random() * voices.length)]
+    }
+
     const loopText = (text: string, onLoopEnd?: () => void) => {
         if (!isReady || !selectedVoice || !text) return;
         dispatch(setPlayState("looping"))
         let isLooping = true;
         const synth = window.speechSynthesis;
+        const voices = window.speechSynthesis.getVoices()
+        let voice = voices.find(v => v.name === selectedVoice)
 
         const playNext = () => {
             if (!isLooping || !isReady || !selectedVoice) return;
 
             synth.cancel(); // 取消之前的播放
             const utterance = new SpeechSynthesisUtterance(text);
-            const voice = window.speechSynthesis.getVoices().find(v => v.name === selectedVoice);
-
+            if(random){
+                voice = getRandomVoice()
+            }
             if (voice) {
                 utterance.voice = voice;
                 utterance.rate = speed;

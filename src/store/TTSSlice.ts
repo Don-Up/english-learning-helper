@@ -7,6 +7,7 @@ interface TTSState {
     speed: number;        // 播放速度
     playState: PlayState;
     voices: string[],
+    random: boolean,
 }
 
 const initialState: TTSState = {
@@ -14,6 +15,7 @@ const initialState: TTSState = {
     speed: 1.0, // 默认播放速度
     playState: "stopped",
     voices: [],
+    random: false,
 };
 
 
@@ -37,8 +39,11 @@ const TTSSlice = createSlice({
         setVoiceList(state, action: PayloadAction<string[]>) {
             state.voices = action.payload;
         },
+        setRandomVoice(state, action: PayloadAction<boolean>) {
+            state.random = action.payload;
+        },
     },
 });
 
-export const { setSelectedVoice, setSpeed, setPlayState, setVoiceList, resetTTS } = TTSSlice.actions;
+export const { setSelectedVoice, setSpeed, setPlayState, setVoiceList, setRandomVoice, resetTTS } = TTSSlice.actions;
 export default TTSSlice.reducer;
