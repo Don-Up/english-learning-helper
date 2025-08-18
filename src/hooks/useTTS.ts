@@ -13,6 +13,7 @@ export const useTTS = () => {
     const dispatch = useAppDispatch();
     const { selectedVoice, speed, playState, voices, random } = useAppSelector(state => state.tts);
     const [isReady, setIsReady] = useState(false);
+    const isLoop = useRef( false)
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -135,11 +136,12 @@ export const useTTS = () => {
     };
 
     const pausePlay = () => {
-        if(playState === "playing"){
+        if(playState === "playing" || playState === "looping"){
             dispatch(setPlayState("paused"))
+            isLoop.current = playState === "looping"
             window.speechSynthesis.pause();
         } else {
-            dispatch(setPlayState("playing"))
+            dispatch(setPlayState(isLoop ? "looping" : "playing"))
             window.speechSynthesis.resume();
         }
     }

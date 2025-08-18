@@ -151,3 +151,8 @@
   scrollbar-width: thin; /* 细滚动条 */
   scrollbar-color: #4a5568 #2d3748; /* 滑块颜色 轨道颜色 */
 }
+
+/*将选中的文本背景改为绿色*/
+::selection {
+  background: #007d65;
+}

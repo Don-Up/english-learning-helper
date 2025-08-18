@@ -59,6 +59,10 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
         playText(window.getSelection()?.toString() || "")
     }
 
+    function handleLoopSelection() {
+        loopText(window.getSelection()?.toString() || "")
+    }
+
     function handlePlayRepeatedSelection() {
         playText(`${window.getSelection()?.toString()}. `.repeat(playCount))
     }
@@ -72,6 +76,9 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
                 </Button>
                 <Button className={"ml-2 w-20"} size={"sm"} onClick={handlePlayRepeatedSelection} disabled={isPlaying}>
                     PlayRS
+                </Button>
+                <Button className={"ml-2 w-20"} size={"sm"} onClick={handleLoopSelection} disabled={isPlaying}>
+                    PlayL
                 </Button>
                 <Button className={"ml-2 w-20"} size={"sm"} onClick={handleRecord} disabled={isPlaying}>
                     {isRecording ? "Finish" : "Record"}

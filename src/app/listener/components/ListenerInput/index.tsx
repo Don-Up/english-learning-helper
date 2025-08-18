@@ -26,7 +26,7 @@ const ListenerInput: React.FC = () => {
 
     function handleGenerate() {
         // 按照英文句号进行切割
-        const textList = value.split(/\.+/).filter(item => item !== "").map(item => item.trim()+ ". ");
+        const textList = value.replace(/\//g, " ").trim().split(/[.?]+(?=\s|$)/).filter(item => item !== "").map(item => item.trim() + ". ");
         dispatch(setListenChips(textList))
         setValue("")
     }
@@ -58,6 +58,14 @@ const ListenerInput: React.FC = () => {
         dispatch(setRandomVoice(!random))
     }
 
+    async function handlePaste() {
+        const text = await navigator.clipboard.readText()
+        if (!text) return
+        const textList = text.replace(/\//g, " ").trim().split(/[.?]+(?=\s|$)/).filter(item => item !== "").map(item => item.trim() + ". ");
+        dispatch(setListenChips(textList))
+        loopText(textList[0])
+    }
+
     return (
         <div className={"my-8"}>
             <Textarea
@@ -71,6 +79,7 @@ const ListenerInput: React.FC = () => {
                 <Button onClick={handleReadAll} disabled={chips.length === 0}>Play All</Button>
                 <Button onClick={handleReadRAll} disabled={chips.length === 0}>PlayR All</Button>
                 <Button onClick={handleLoopAll} disabled={chips.length === 0}>Loop All</Button>
+                <Button onClick={handlePaste}>Paste</Button>
                 <Input type={"number"} placeholder={"playCount"} className={"w-[60px] text-white"} value={playCount}
                        onChange={handleCountChange}/>
                 <Switch checked={random} onCheckedChange={handleRandomChange}/>
