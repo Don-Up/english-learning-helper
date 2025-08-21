@@ -8,6 +8,7 @@ interface TTSState {
     playState: PlayState;
     voices: string[],
     random: boolean,
+    stopPlayWhenBlur: boolean,
 }
 
 const initialState: TTSState = {
@@ -16,6 +17,7 @@ const initialState: TTSState = {
     playState: "stopped",
     voices: [],
     random: false,
+    stopPlayWhenBlur: false,
 };
 
 
@@ -42,8 +44,11 @@ const TTSSlice = createSlice({
         setRandomVoice(state, action: PayloadAction<boolean>) {
             state.random = action.payload;
         },
+        setStopPlayWhenBlur(state, action: PayloadAction<boolean>) {
+            state.stopPlayWhenBlur = action.payload;
+        }
     },
 });
 
-export const { setSelectedVoice, setSpeed, setPlayState, setVoiceList, setRandomVoice, resetTTS } = TTSSlice.actions;
+export const { setSelectedVoice, setSpeed, setPlayState, setVoiceList, setRandomVoice, setStopPlayWhenBlur,resetTTS } = TTSSlice.actions;
 export default TTSSlice.reducer;

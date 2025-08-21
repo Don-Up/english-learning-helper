@@ -1,11 +1,11 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import TTSVoiceSelect from "@/components/TTSVoiceSelect";
 import {Slider} from "@/components/ui/slider";
 import {useAppDispatch, useAppSelector} from "@/store/hooks";
-import {setRandomVoice, setSpeed} from "@/store/TTSSlice";
+import {setRandomVoice, setSpeed, setStopPlayWhenBlur} from "@/store/TTSSlice";
 import {setListenChips, setPlayCount} from "@/store/ListenChipSlice";
 import {Input} from "@/components/ui/input";
 import {useTTS} from "@/hooks/useTTS";
@@ -13,12 +13,21 @@ import {Switch} from "@/components/ui/switch";
 
 const ListenerInput: React.FC = () => {
     const dispatch = useAppDispatch();
-    const {speed, random} = useAppSelector(state => state.tts);
-    const {playText, loopText} = useTTS()
+    const {speed, random, stopPlayWhenBlur} = useAppSelector(state => state.tts);
+    const {playText, loopText, stopPlay} = useTTS()
     const {playCount, chips} = useAppSelector(state => state.listener)
     const [value, setValue] = React.useState("");
 
     const placeholder = `Please paste the text`;
+
+    useEffect(() => {
+        // 监听当前页面失去焦点, 停止播放
+        if(stopPlayWhenBlur){
+            window.addEventListener('blur', stopPlay);
+        } else {
+            window.removeEventListener('blur', stopPlay);
+        }
+    }, [stopPlayWhenBlur]);
 
     const handleSliderChange = (value: number[]) => {
         dispatch(setSpeed(value[0]));
@@ -58,6 +67,10 @@ const ListenerInput: React.FC = () => {
         dispatch(setRandomVoice(!random))
     }
 
+    function handleStopPlayWhenBlurChange() {
+        dispatch(setStopPlayWhenBlur(!stopPlayWhenBlur))
+    }
+
     async function handlePaste() {
         const text = await navigator.clipboard.readText()
         if (!text) return
@@ -85,6 +98,10 @@ const ListenerInput: React.FC = () => {
                 <Switch checked={random} onCheckedChange={handleRandomChange}/>
                 <p className="text-sm text-gray-600">
                     Random
+                </p>
+                <Switch checked={stopPlayWhenBlur} onCheckedChange={handleStopPlayWhenBlurChange}/>
+                <p className="text-sm text-gray-600">
+                    BlurStop
                 </p>
             </div>
             <div className={"mt-4"}>

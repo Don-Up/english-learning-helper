@@ -31,7 +31,7 @@ export const useTTS = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [playState]);
+    }, []);
 
     // 获取浏览器支持的语音列表并设置默认语音
     useEffect(() => {
