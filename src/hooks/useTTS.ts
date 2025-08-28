@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {useAppDispatch, useAppSelector} from "@/store/hooks";
 import {setPlayState, setSelectedVoice, setSpeed, setVoiceList} from "@/store/TTSSlice";
 import _ from 'lodash';
 
@@ -11,9 +11,9 @@ export interface Voice {
 
 export const useTTS = () => {
     const dispatch = useAppDispatch();
-    const { selectedVoice, speed, playState, voices, random } = useAppSelector(state => state.tts);
+    const {selectedVoice, speed, playState, voices, random} = useAppSelector(state => state.tts);
     const [isReady, setIsReady] = useState(false);
-    const isLoop = useRef( false)
+    const isLoop = useRef(false)
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -88,25 +88,25 @@ export const useTTS = () => {
         'Microsoft Ana Online (Natural) - English (United States)'
     ]
 
-    const getRandomVoice = () =>  {
+    const getRandomVoice = () => {
         const voices = window.speechSynthesis.getVoices().filter(voice => voice.lang.startsWith("en") && !voicesOld.includes(voice.name))
         return voices[Math.floor(Math.random() * voices.length)]
     }
 
-    const loopText = (text: string, onLoopEnd?: () => void) => {
+    const loopText = (text: string, onLoopEnd?: (() => void) | null, isIndianVoice = false) => {
         if (!isReady || !selectedVoice || !text) return;
         dispatch(setPlayState("looping"))
         let isLooping = true;
         const synth = window.speechSynthesis;
         const voices = window.speechSynthesis.getVoices()
-        let voice = voices.find(v => v.name === selectedVoice)
+        let voice = voices.find(v => v.name === (isIndianVoice ? "Microsoft Prabhat Online (Natural) - English (India)" : selectedVoice))
 
         const playNext = () => {
             if (!isLooping || !isReady || !selectedVoice) return;
 
             synth.cancel(); // 取消之前的播放
             const utterance = new SpeechSynthesisUtterance(text);
-            if(random){
+            if (random) {
                 voice = getRandomVoice()
             }
             if (voice) {
@@ -136,7 +136,7 @@ export const useTTS = () => {
     };
 
     const pausePlay = () => {
-        if(playState === "playing" || playState === "looping"){
+        if (playState === "playing" || playState === "looping") {
             dispatch(setPlayState("paused"))
             isLoop.current = playState === "looping"
             window.speechSynthesis.pause();
@@ -156,5 +156,5 @@ export const useTTS = () => {
         dispatch(setSpeed(newSpeed));
     };
 
-    return { playText, loopText, stopPlay, setVoice, setPlaybackSpeed, playState, voices, selectedVoice, speed, isReady };
+    return {playText, loopText, stopPlay, setVoice, setPlaybackSpeed, playState, voices, selectedVoice, speed, isReady};
 };
