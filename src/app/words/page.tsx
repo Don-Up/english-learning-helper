@@ -35,6 +35,11 @@ export default function WordsPage() {
 
     const handleGenerate = () => {
         const newWords = input.split(',').map(w => w.trim()).filter(w => w)
+        // Shuffle the array using Fisher-Yates algorithm
+        for (let i = newWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newWords[i], newWords[j]] = [newWords[j], newWords[i]];
+        }
         dispatch(setWords(newWords))
         setInput('')
         setPlay(true)
@@ -42,6 +47,11 @@ export default function WordsPage() {
 
     const handleAppend = () => {
         const newWords = input.split(',').map(w => w.trim()).filter(w => w)
+        // Shuffle the array using Fisher-Yates algorithm
+        for (let i = newWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newWords[i], newWords[j]] = [newWords[j], newWords[i]];
+        }
         dispatch(appendWords(newWords))
         setInput('')
     }
