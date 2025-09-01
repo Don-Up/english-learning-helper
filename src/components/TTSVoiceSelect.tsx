@@ -12,9 +12,9 @@ const TTSVoiceSelect: React.FC = () => {
     };
 
     // 测试选中的语音
-    const testVoice = () => {
-        playText(`Hello, this is a test`);
-    };
+    // const testVoice = () => {
+    //     playText(`Hello, this is a test`);
+    // };
 
     return (
         <div className="flex items-center space-x-4">
@@ -38,13 +38,13 @@ const TTSVoiceSelect: React.FC = () => {
                     </SelectContent>
                 </Select>
             </div>
-            <Button
-                onClick={testVoice}
-                disabled={!selectedVoice || !isReady}
-                className="px-4 py-2"
-            >
-                Test Voice
-            </Button>
+            {/*<Button*/}
+            {/*    onClick={testVoice}*/}
+            {/*    disabled={!selectedVoice || !isReady}*/}
+            {/*    className="px-4 py-2"*/}
+            {/*>*/}
+            {/*    Test Voice*/}
+            {/*</Button>*/}
         </div>
     );
 };

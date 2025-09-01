@@ -87,9 +87,9 @@ export default function WordsPage() {
                         </div>
 
                         {words.length > 0 && (
-                            <div className="mt-8">
+                            <div className="mt-12">
                                 <div className="relative flex justify-center items-center mb-4">
-                                    <p className="text-8xl font-bold">{currentWord}</p>
+                                    <p className="text-6xl font-bold">{currentWord}</p>
                                     {isMasked && (
                                         <div className="absolute inset-0 bg-gray-600 opacity-100 flex justify-center items-center" />
                                     )}
