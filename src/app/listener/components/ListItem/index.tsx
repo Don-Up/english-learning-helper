@@ -94,7 +94,7 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
                     {isPlaying ? "Stop" : "Playback"}
                 </Button>
             </div>
-            <div className={"mt-4 text-gray-100 text-lg"}>
+            <div className={"mt-4 text-gray-100 text-lg"} style={{visibility: isRecording ?"hidden": "visible"}}>
                 {text}
             </div>
 

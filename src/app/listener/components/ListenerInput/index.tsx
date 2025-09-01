@@ -74,9 +74,11 @@ const ListenerInput: React.FC = () => {
     async function handlePaste() {
         const text = await navigator.clipboard.readText()
         if (!text) return
-        const textList = text.replace(/\//g, " ").trim().split(/[.?]+(?=\s|$)/).filter(item => item !== "").map(item => item.trim() + ". ");
+        const textList = text.replaceAll("e.g.", "such as").replace(/\//g, " ").trim().split(/[.?]+(?=\s|$)/).filter(item => item !== "").map(item => item.trim() + ". ");
         dispatch(setListenChips(textList))
-        loopText(textList[0])
+        loopText(textList.map(item =>
+            `${item}`.repeat(playCount)
+        ).join(""))
     }
 
     return (
