@@ -71,12 +71,20 @@ const ListItem: React.FC<ListItemProps> = ({index, text}) => {
         loopText(text, null, true)
     }
 
+    function handlePlayCWithIndian(){
+        const result = chips.slice(Number(index[0]) - 1, chips.length).join("")
+        playText(result, null, true)
+    }
+
     return (
         <div className="p-4 mt-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg shadow-gray-800/50 text-white">
             <div className={"flex"}>
                 <div className={"text-2xl font-bold text-yellow-200"}>{index}</div>
                 <Button className={"ml-auto w-20"} size={"sm"} onClick={handleLoopWithIndian} disabled={isPlaying}>
                     LoopInd
+                </Button>
+                <Button className={"ml-2 w-20"} size={"sm"} onClick={handlePlayCWithIndian} disabled={isPlaying}>
+                    IndC
                 </Button>
                 <Button className={"ml-2 w-20"} size={"sm"} onClick={handlePlaySelection} disabled={isPlaying}>
                     PlayS

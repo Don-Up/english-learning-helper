@@ -62,7 +62,7 @@ export const useTTS = () => {
         };
     }, []);
 
-    const playText = _.throttle((text: string, onPlayEnd?: () => void) => {
+    const playText = _.throttle((text: string, onPlayEnd?: (() => void) | null, isIndianVoice = false) => {
         if (!isReady || !selectedVoice || !text) return;
         dispatch(setPlayState("playing"))
         const synth = window.speechSynthesis;
@@ -70,7 +70,7 @@ export const useTTS = () => {
         const utterance = new SpeechSynthesisUtterance(text);
 
         const voices = window.speechSynthesis.getVoices()
-        const voice = random ? getRandomVoice() : voices.find(v => v.name === selectedVoice)
+        const voice = random ? getRandomVoice() : voices.find(v => v.name === (isIndianVoice ? "Microsoft Prabhat Online (Natural) - English (India)" : selectedVoice))
         if (voice) {
             utterance.voice = voice;
             utterance.rate = speed;
